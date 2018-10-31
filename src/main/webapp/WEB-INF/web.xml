@@ -1,0 +1,111 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         id="WebApp_ID" version="3.1">
+  <display-name>Archetype Created Web Application</display-name>
+  <!-- 在WEB容器里面进行Spring容器的加载 -->
+  <listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener>
+  <!-- 此配置描述的是在项目开发过程之中，Spring容器所需要使用到的配置文件 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+
+  <!-- 此为Spring MVC配置所需要的程序文件，所有的请求都提交给Spring的Servlet程序 -->
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <!-- 此为Spring MVC自己提供的servlet程序，一定要写上，因为其可以处理用户请求 -->
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <!-- 配置Spring MVC所需要的配置文件，可以与Spring容器写在一起 -->
+      <param-value>classpath:applicationMVC.xml</param-value>
+    </init-param>
+  </servlet>
+  <!-- SpringMVC中所有路径的请求映射，使用的是“*.action” -->
+  <servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <url-pattern>*.action</url-pattern>
+    <!--<url-pattern>/</url-pattern>-->
+  </servlet-mapping>
+
+  <!--需要定义一个专门提供有Restful风格的WebService的Servlet处理类-->
+  <!--<servlet>-->
+  <!--<servlet-name>restService</servlet-name>-->
+  <!--<servlet-class>-->
+  <!--com.sun.jersey.spi.container.servlet.ServletContainer-->
+  <!--</servlet-class>-->
+  <!--&lt;!&ndash;定义的是自动配置的扫描包，也就是说你的程序应该放在""包中&ndash;&gt;-->
+  <!--<init-param>-->
+  <!--<param-name>com.sun.jersey.config.property.packages</param-name>-->
+  <!--<param-value>com.zhy.resources</param-value>-->
+  <!--</init-param>-->
+  <!--</servlet>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>restService</servlet-name>-->
+  <!--&lt;!&ndash;所有的WebService的服务器路径必须在"/rest/"目录下&ndash;&gt;-->
+  <!--<url-pattern>/rest/*</url-pattern>-->
+  <!--</servlet-mapping>-->
+
+  <!-- Spring中提供的编码过滤器，使用的编码都是UTF-8 -->
+  <filter>
+    <filter-name>encoding</filter-name>
+    <filter-class>
+      org.springframework.web.filter.CharacterEncodingFilter
+    </filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>utf-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <!--进行shiro的过滤器的配置-->
+  <filter>
+    <filter-name>shiroFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <!--该参数表示shiro的生命周期将交由spring容器进行管理（默认情况下，取值为false-->
+    <!--如果将其内容设置为true，则表示由Servlet容器进行管理-->
+    <init-param>
+      <param-name>targetFileterLifecycle</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>shiroFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+  </filter-mapping>
+  <!--<filter>-->
+  <!--<filter-name>sessionFilter</filter-name>-->
+  <!--<filter-class>com.zhy.filter.SessionFilter</filter-class>-->
+  <!--</filter>-->
+  <!--<filter-mapping>-->
+  <!--<filter-name>sessionFilter</filter-name>-->
+  <!--<url-pattern>/*</url-pattern>-->
+  <!--</filter-mapping>-->
+</web-app>
